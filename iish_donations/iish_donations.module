@@ -1,0 +1,138 @@
+<?php
+/**
+ * @file
+ * Allows visitors to pay for a Friend membership or donate to the IISH using PayWay.
+ */
+
+/**
+ * Implements hook_permission()
+ */
+function iish_donations_permission() {
+  $permissions = array();
+
+  $permissions['friends donations overview'] = array(
+    'title' => t('Friends and donations overview'),
+    'description' => t('Allows users to gain an overview of the registered friends and donations.'),
+  );
+
+  return $permissions;
+}
+
+/**
+ * Implements hook_menu()
+ */
+function iish_donations_menu() {
+  $items = array();
+
+  $items['donations'] = array(
+    'title' => t('Friends membership and donations'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('iish_donations_main_form'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'iish_donations_main.inc.php',
+  );
+
+  $items['donations/overview'] = array(
+    'title' => t('Friends memberships and donations'),
+    'page callback' => 'iish_donations_overview_all',
+    'access callback' => 'user_access',
+    'access arguments' => array('friends donations overview'),
+    'file' => 'iish_donations_overview.inc.php',
+  );
+
+  $items['donations/overview/all'] = array(
+    'title' => t('All by year of creation'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'page callback' => 'iish_donations_overview_all',
+    'access callback' => 'user_access',
+    'access arguments' => array('friends donations overview'),
+    'file' => 'iish_donations_overview.inc.php',
+    'weight' => 0,
+  );
+
+  $items['donations/overview/friends'] = array(
+    'title' => t('All by year of Friends membership'),
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'iish_donations_overview_friends',
+    'access callback' => 'user_access',
+    'access arguments' => array('friends donations overview'),
+    'file' => 'iish_donations_overview.inc.php',
+    'weight' => 1,
+  );
+
+  $items['donations/overview/set-payed'] = array(
+    'page callback' => 'iish_donations_order_set_payed',
+    'access callback' => 'user_access',
+    'access arguments' => array('friends donations overview'),
+    'type' => MENU_CALLBACK,
+    'file' => 'iish_donations_overview.inc.php',
+    'delivery callback' => 'iish_donations_deliver_ajax',
+  );
+
+  $items['donations/accept'] = array(
+    'title' => t('Thank you for your payment'),
+    'page callback' => 'iish_donations_callback_accept',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'iish_donations_callback.inc.php',
+  );
+
+  $items['donations/decline'] = array(
+    'title' => t('Your payment was declined'),
+    'page callback' => 'iish_donations_callback_decline',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'iish_donations_callback.inc.php',
+  );
+
+  $items['donations/exception'] = array(
+    'title' => t('Something went wrong with your payment'),
+    'page callback' => 'iish_donations_callback_exception',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'iish_donations_callback.inc.php',
+  );
+
+  $items['admin/settings/iish-donations'] = array(
+    'title' => 'IISH Friends memberships and donations settings',
+    'description' => 'Change the settings for this module.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('iish_donations_settings_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_CALLBACK,
+    'file' => 'iish_donations_settings.inc.php',
+  );
+
+  return $items;
+}
+
+/**
+ * Maps PayWay information about an order to an array to be used in database queries.
+ * @param PayWayMessage $message The PayWay order message.
+ * @return array An array with the order details.
+ */
+function iish_donations_map_payway_message(PayWayMessage $message) {
+  return array(
+    'order_id' => $message->get('orderid'),
+    'ordercode' => $message->get('ordercode'),
+    'person_id' => $message->get('userid'),
+    'refunded_amount' => ($message->get('refundedamount') !== NULL) ? intval($message->get('refundedamount')) : 0,
+    'payed' => $message->get('payed'),
+    'payment_method' => $message->get('paymentmethod'),
+    'created_at' => date("Y-m-d H:i:s", $message->getDateTime('createdat')),
+    'updated_at' => date("Y-m-d H:i:s", $message->getDateTime('updatedat')),
+    'refunded_at' => date("Y-m-d H:i:s", $message->getDateTime('refundedat')),
+    'description' => $message->get('com'),
+  );
+}
+
+/**
+ * Just print the callback results.
+ * For use with AJAX.
+ * @param string $page_callback_result Callback to print.
+ */
+function iish_donations_deliver_ajax($page_callback_result) {
+  print $page_callback_result;
+  drupal_exit();
+}

@@ -1,0 +1,265 @@
+<?php
+/**
+ * @file
+ * Handles installation and removal of this module.
+ */
+
+/**
+ * Implements hook_schema()
+ */
+function iish_donations_schema() {
+  $schema = array();
+
+  $schema['iish_donations_persons'] = array(
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'address' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'zipcode' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'city' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'country' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'email' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'date_of_birth' => array(
+        'mysql_type' => 'date',
+        'not null' => FALSE,
+      ),
+      'gender' => array(
+        'type' => 'varchar',
+        'length' => 6,
+        'not null' => TRUE,
+      ),
+      'created_on' => array(
+        'mysql_type' => 'datetime',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+    'indexes' => array(
+      'created_on' => array('created_on'),
+    ),
+  );
+
+  $schema['iish_donations_memberships'] = array(
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'person_id' => array(
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'year' => array(
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => TRUE,
+      ),
+      'bank_account' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'amount' => array(
+        'type' => 'numeric',
+        'size' => 'normal',
+        'not null' => TRUE,
+        'default' => 0,
+        'precision' => 10,
+        'scale' => 2
+      ),
+    ),
+    'primary key' => array('id'),
+    'indexes' => array(
+      'person_id' => array('person_id'),
+      'year' => array('year'),
+    ),
+    'foreign keys' => array(
+      'person_options' => array(
+        'table' => 'iish_donations_persons',
+        'columns' => array('person_id' => 'id'),
+      )
+    ),
+  );
+
+  $schema['iish_donations_donations'] = array(
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'person_id' => array(
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'amount' => array(
+        'type' => 'numeric',
+        'size' => 'normal',
+        'not null' => TRUE,
+        'default' => 0,
+        'precision' => 10,
+        'scale' => 2
+      ),
+    ),
+    'primary key' => array('id'),
+    'indexes' => array(
+      'person_id' => array('person_id'),
+    ),
+    'foreign keys' => array(
+      'person_options' => array(
+        'table' => 'iish_donations_persons',
+        'columns' => array('person_id' => 'id'),
+      )
+    ),
+  );
+
+  $schema['iish_donations_orders'] = array(
+    'fields' => array(
+      'order_id' => array(
+        'type' => 'serial',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'ordercode' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => FALSE,
+      ),
+      'person_id' => array(
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'amount' => array(
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'refunded_amount' => array(
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'payed' => array(
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'payment_method' => array(
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created_at' => array(
+        'mysql_type' => 'datetime',
+        'not null' => TRUE,
+      ),
+      'updated_at' => array(
+        'mysql_type' => 'datetime',
+        'not null' => TRUE,
+      ),
+      'refunded_at' => array(
+        'mysql_type' => 'datetime',
+        'not null' => FALSE,
+      ),
+      'description' => array(
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('order_id'),
+    'unique keys' => array(
+      'ordercode' => array('ordercode'),
+    ),
+    'indexes' => array(
+      'person_id' => array('person_id'),
+    ),
+    'foreign keys' => array(
+      'person_orders' => array(
+        'table' => 'iish_donations_persons',
+        'columns' => array('person_id' => 'id'),
+      )
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install()
+ */
+function iish_donations_install() {
+  db_query('
+    ALTER TABLE {iish_donations_memberships}
+    ADD CONSTRAINT {person_memberships}
+    FOREIGN KEY (person_id) REFERENCES {iish_donations_persons} (id)
+  ');
+
+  db_query('
+    ALTER TABLE {iish_donations_donations}
+    ADD CONSTRAINT {person_donations}
+    FOREIGN KEY (person_id) REFERENCES {iish_donations_persons} (id)
+  ');
+
+  db_query('
+    ALTER TABLE {iish_donations_orders}
+    ADD CONSTRAINT {person_orders}
+    FOREIGN KEY (person_id) REFERENCES {iish_donations_persons} (id)
+  ');
+}
+
+/**
+ * Implements hook_uninstall()
+ */
+function iish_donations_uninstall() {
+  db_query('
+    ALTER TABLE {iish_donations_memberships}
+    DROP FOREIGN KEY {person_memberships
+  ');
+
+  db_query('
+    ALTER TABLE {iish_donations_donations}
+    DROP FOREIGN KEY {person_donations}
+  ');
+
+  db_query('
+    ALTER TABLE {iish_donations_orders}
+    DROP FOREIGN KEY {person_orders}
+  ');
+}
