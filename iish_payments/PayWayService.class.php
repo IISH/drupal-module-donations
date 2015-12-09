@@ -13,10 +13,10 @@ class PayWayService {
    * Constructs the PayWay service.
    */
   public function __construct() {
-    $this->address = variable_get('iish_donations_payway_address');
-    $this->passphraseIn = variable_get('iish_donations_payway_passphrase_in');
-    $this->passphraseOut = variable_get('iish_donations_payway_passphrase_out');
-    $this->project = variable_get('iish_donations_payway_project');
+    $this->address = variable_get('iish_payments_payway_address');
+    $this->passphraseIn = variable_get('iish_payments_payway_passphrase_in');
+    $this->passphraseOut = variable_get('iish_payments_payway_passphrase_out');
+    $this->project = variable_get('iish_payments_payway_project');
   }
 
   /**

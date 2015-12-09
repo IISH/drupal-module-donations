@@ -1,0 +1,12 @@
+#iish-payments-friends-form input[type=submit] {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#iish-payments-friends-form .date-padding {
+    padding: 0;
+}
+
+#edit-gender div {
+    display: inline-block;
+}

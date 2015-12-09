@@ -1,0 +1,68 @@
+<?php
+/**
+ * @file
+ * Allows users to register and pay for a Friends membership, donate to the IISH or pay an invoice online using PayWay.
+ */
+
+/**
+ * Implements hook_menu()
+ */
+function iish_payments_menu() {
+  $items = array();
+
+  $membershipAndDonation = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('iish_payments_friends_form'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'iish_payments_friends.inc.php',
+  );
+
+  $items['friends/membership'] = array_merge($membershipAndDonation, array('title' => t('Membership')));
+  $items['donation'] =  array_merge($membershipAndDonation, array('title' => t('Donation')));
+
+  $items['invoice-online'] = array(
+    'title' => t('Online payment of invoice'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('iish_payments_invoice_form'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'iish_payments_invoice.inc.php',
+  );
+
+  $items['payment/accept'] = array(
+    'title' => t('Thank you for your payment'),
+    'page callback' => 'iish_payments_callback_accept',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'iish_payments_callback.inc.php',
+  );
+
+  $items['payment/decline'] = array(
+    'title' => t('Your payment was declined'),
+    'page callback' => 'iish_payments_callback_decline',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'iish_payments_callback.inc.php',
+  );
+
+  $items['payment/exception'] = array(
+    'title' => t('Something went wrong with your payment'),
+    'page callback' => 'iish_payments_callback_exception',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'iish_payments_callback.inc.php',
+  );
+
+  $items['admin/settings/iish-payments'] = array(
+    'title' => 'IISH payments settings',
+    'description' => 'Change the settings for this module.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('iish_payments_settings_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_CALLBACK,
+    'file' => 'iish_payments_settings.inc.php',
+  );
+
+  return $items;
+}

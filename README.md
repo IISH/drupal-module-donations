@@ -1,2 +1,2 @@
-# drupal-module-donations
-Drupal module for donations
+# drupal-module-payments
+Drupal module for payments through PayWay on the IISH website
