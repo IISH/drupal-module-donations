@@ -10,16 +10,14 @@
 function iish_payments_menu() {
   $items = array();
 
-  $membershipAndDonation = array(
+  $items['friends/membership'] = array(
+    'title' => t('Membership'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('iish_payments_friends_form'),
     'access callback' => TRUE,
     'type' => MENU_NORMAL_ITEM,
     'file' => 'iish_payments_friends.inc.php',
   );
-
-  $items['friends/membership'] = array_merge($membershipAndDonation, array('title' => t('Membership')));
-  $items['donation'] =  array_merge($membershipAndDonation, array('title' => t('Donation')));
 
   $items['invoice-online'] = array(
     'title' => t('Online payment of invoice'),
@@ -65,4 +63,21 @@ function iish_payments_menu() {
   );
 
   return $items;
+}
+
+/**
+ * Implements hook_variable_info()
+ */
+function iish_payments_variable_info($options) {
+  $variables = array();
+
+  $variables['iish_payments_friends_information'] = array(
+    'type' => 'text',
+    'title' => t('Friends information text', array(), $options),
+    'description' => t('Enter information about the Friend memberships and donations.', array(), $options),
+    'required' => TRUE,
+    'localize' => TRUE,
+  );
+
+  return $variables;
 }

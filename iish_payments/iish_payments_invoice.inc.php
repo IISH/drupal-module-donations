@@ -8,41 +8,27 @@
  * Implements hook_form()
  */
 function iish_payments_invoice_form($form, &$form_state) {
-  $invoiceInfo = variable_get('iish_payments_invoice_information');
-
-  $form['body'] = array(
-    '#type' => 'fieldset',
-  );
-
-  $form['body']['text'] = array(
-    '#markup' => nl2br(filter_xss_admin($invoiceInfo['value'])),
-  );
-
-  $form['main'] = array(
-    '#type' => 'fieldset',
-  );
-
-  $form['main']['name'] = array(
+  $form['name'] = array(
     '#type' => 'textfield',
     '#title' => t('Name'),
     '#maxlength' => 255,
     '#required' => TRUE,
   );
 
-  $form['main']['email'] = array(
+  $form['email'] = array(
     '#type' => 'textfield',
     '#title' => t('E-mail'),
     '#maxlength' => 255,
     '#required' => TRUE,
   );
 
-  $form['main']['invoice_number'] = array(
+  $form['invoice_number'] = array(
     '#type' => 'textfield',
     '#title' => t('Invoice number'),
     '#required' => TRUE,
   );
 
-  $form['main']['amount'] = array(
+  $form['amount'] = array(
     '#type' => 'textfield',
     '#title' => t('Amount in EUR'),
     '#required' => TRUE,
@@ -66,7 +52,7 @@ function iish_payments_invoice_form_validate($form, &$form_state) {
     form_set_error('email', t('Please specify a valid e-mail address.'));
   }
 
-  if (!ctype_digit($form_state['values']['amount']) || (intval($form_state['values']['amount']) <= 0)) {
+  if (!ctype_digit($form_state['values']['amount']) || ((int) $form_state['values']['amount'] <= 0)) {
     form_set_error('amount', t('Please specify a valid amount.'));
   }
 }
@@ -78,7 +64,7 @@ function iish_payments_invoice_form_submit($form, &$form_state) {
   global $language;
 
   $createOrderMessage = new PayWayMessage(array(
-    'amount' => intval($form_state['values']['amount']) * 100,
+    'amount' => ((int) $form_state['values']['amount']) * 100,
     'currency' => 'EUR',
     'language' => ($language->language === 'nl') ? 'nl_NL' : 'en_US',
     'cn' => $form_state['values']['name'],

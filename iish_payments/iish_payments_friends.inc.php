@@ -77,7 +77,7 @@ function iish_payments_friends_choice_form($form, &$form_state) {
     '#options' => array(
       'new' => t('I want to become a new member'),
       'renew' => t('I want to renew my membership'),
-      'donation' => t('I want to make a donation'),
+      'donation' => t('I want to make a donation to the IISH'),
     ),
   );
 
@@ -110,7 +110,7 @@ function iish_payments_friends_membership_form($form, &$form_state) {
     drupal_set_title(t('Renew Friends membership'));
   }
 
-  if ($choice == 'new') {
+  if ($choice === 'new') {
     $form['gender'] = array(
       '#type' => 'radios',
       '#title' => t('Gender'),
@@ -129,7 +129,7 @@ function iish_payments_friends_membership_form($form, &$form_state) {
     '#required' => TRUE,
   );
 
-  if ($choice == 'new') {
+  if ($choice === 'new') {
     $form['address'] = array(
       '#type' => 'textfield',
       '#title' => t('Address'),
@@ -166,7 +166,7 @@ function iish_payments_friends_membership_form($form, &$form_state) {
     '#required' => TRUE,
   );
 
-  if ($choice == 'new') {
+  if ($choice === 'new') {
     $form['date_of_birth'] = array(
       '#type' => 'date_popup',
       '#title' => t('Date of birth'),
@@ -192,7 +192,7 @@ function iish_payments_friends_membership_form($form, &$form_state) {
     ),
   );
 
-  if ($choice == 'renew') {
+  if ($choice === 'renew') {
     $form['year'] = array(
       '#type' => 'select',
       '#title' => t('Year'),
@@ -208,13 +208,22 @@ function iish_payments_friends_membership_form($form, &$form_state) {
     );
   }
 
+  if ($choice === 'new') {
+    $form['donation'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Donation in EUR'),
+      '#required'=> FALSE,
+      '#default_value' => 0,
+    );
+  }
+
   $form['submit_online'] = array(
     '#type' => 'submit',
     '#name' => 'submit_online',
     '#value' => t('Pay online with iDeal or credit card'),
   );
 
-  if ($choice == 'new') {
+  if ($choice === 'new') {
     $form['submit_invoice'] = array(
       '#type' => 'submit',
       '#name' => 'submit_invoice',
@@ -232,6 +241,12 @@ function iish_payments_friends_membership_form_validate($form, &$form_state) {
   if (!valid_email_address($form_state['values']['email'])) {
     form_set_error('email', t('Please specify a valid e-mail address.'));
   }
+
+  if ($form_state['choice'] === 'new') {
+    if (!ctype_digit($form_state['values']['donation']) || ((int) $form_state['values']['donation'] < 0)) {
+      form_set_error('donation', t('Please specify a valid donation amount.'));
+    }
+  }
 }
 
 /**
@@ -242,10 +257,14 @@ function iish_payments_friends_membership_form_submit($form, &$form_state) {
 
   $choice = $form_state['choice'];
   $amount = (int) $form_state['values']['amount'];
-  $isOnlinePayment = (($choice == 'renew') || ($form_state['triggering_element']['#name'] === 'submit_online'));
+  $donation = ($choice === 'new') ? (int) $form_state['values']['donation'] : 0;
+  $isOnlinePayment = (($choice === 'renew') || ($form_state['triggering_element']['#name'] === 'submit_online'));
 
-  if ($choice == 'new') {
+  if ($choice === 'new') {
     $description = 'Friends membership';
+    if ($donation > 0) {
+      $description .= ' and donation';
+    }
   }
   else {
     $description = 'Friends membership ' . (int) $form_state['values']['year'] .
@@ -253,7 +272,7 @@ function iish_payments_friends_membership_form_submit($form, &$form_state) {
   }
 
   $createOrderMessage = new PayWayMessage(array(
-    'amount' => $amount * 100,
+    'amount' => ($amount * 100) + ($donation * 100),
     'currency' => 'EUR',
     'language' => ($language->language === 'nl') ? 'nl_NL' : 'en_US',
     'cn' => $form_state['values']['name'],
@@ -342,7 +361,7 @@ function iish_payments_friends_donation_form_validate($form, &$form_state) {
     form_set_error('email', t('Please specify a valid e-mail address.'));
   }
 
-  if (!ctype_digit($form_state['values']['amount']) || (intval($form_state['values']['amount']) <= 0)) {
+  if (!ctype_digit($form_state['values']['amount']) || ((int) $form_state['values']['amount'] <= 0)) {
     form_set_error('amount', t('Please specify a valid amount.'));
   }
 }
@@ -356,7 +375,7 @@ function iish_payments_friends_donation_form_submit($form, &$form_state) {
   $isOnlinePayment = ($form_state['triggering_element']['#name'] === 'submit_online');
 
   $createOrderMessage = new PayWayMessage(array(
-    'amount' => intval($form_state['values']['amount']) * 100,
+    'amount' => ((int) $form_state['values']['amount']) * 100,
     'currency' => 'EUR',
     'language' => ($language->language === 'nl') ? 'nl_NL' : 'en_US',
     'cn' => $form_state['values']['name'],
@@ -436,6 +455,10 @@ function iish_payments_membership_mail($key, &$message, $params) {
     $body .= t('Invoice number') . ': ' . check_plain($params['invoice_number']) . "\r\n";
   }
 
+  if ($isNewMembership && ((int) $params['donation'] > 0)) {
+    $body .= t('Donation') . ': EUR ' . number_format($params['donation'], 2, ',', '.') . "\r\n";
+  }
+
   $body .= "\r\n";
   $body .= t('An order has been created with order id: @orderId', array('@orderId' => $params['order_id'])) . "\r\n";
 
@@ -487,6 +510,5 @@ function iish_payments_donation_mail($key, &$message, $params) {
 }
 
 function iish_payments_date_popup_process_alter(&$element, &$form_state, $context) {
-  unset($element['date']['#title']);
-  unset($element['date']['#description']);
+  unset($element['date']['#title'], $element['date']['#description']);
 }

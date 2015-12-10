@@ -30,16 +30,6 @@ function iish_payments_settings_form($form, &$form_state) {
     '#description' => t('Enter information about the Friend memberships and donations.'),
   );
 
-  $invoiceInfo = variable_get('iish_payments_invoice_information');
-
-  $form['general']['iish_payments_invoice_information'] = array(
-    '#type' => 'text_format',
-    '#format' => 'full_html',
-    '#title' => t('Invoice information text'),
-    '#default_value' => $invoiceInfo['value'],
-    '#description' => t('Enter information about paying invoices online.'),
-  );
-
   $form['payway'] = array(
     '#type' => 'fieldset',
     '#title' => t('PayWay'),
