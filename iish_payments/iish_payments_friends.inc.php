@@ -104,10 +104,10 @@ function iish_payments_friends_membership_form($form, &$form_state) {
   $choice = $form_state['choice'];
 
   if ($choice === 'new') {
-    drupal_set_title(t('New Friends membership'));
+    drupal_set_title(t('New Membership'));
   }
   else {
-    drupal_set_title(t('Renew Friends membership'));
+    drupal_set_title(t('Friends Membership Renewal'));
   }
 
   if ($choice === 'new') {
@@ -204,16 +204,7 @@ function iish_payments_friends_membership_form($form, &$form_state) {
     $form['invoice_number'] = array(
       '#type' => 'textfield',
       '#required' => TRUE,
-      '#title' => t('Invoice number'),
-    );
-  }
-
-  if ($choice === 'new') {
-    $form['donation'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Donation in EUR'),
-      '#required'=> FALSE,
-      '#default_value' => 0,
+      '#title' => t('Please fill in the invoice number'),
     );
   }
 
@@ -241,12 +232,6 @@ function iish_payments_friends_membership_form_validate($form, &$form_state) {
   if (!valid_email_address($form_state['values']['email'])) {
     form_set_error('email', t('Please specify a valid e-mail address.'));
   }
-
-  if ($form_state['choice'] === 'new') {
-    if (!ctype_digit($form_state['values']['donation']) || ((int) $form_state['values']['donation'] < 0)) {
-      form_set_error('donation', t('Please specify a valid donation amount.'));
-    }
-  }
 }
 
 /**
@@ -261,13 +246,10 @@ function iish_payments_friends_membership_form_submit($form, &$form_state) {
   $isOnlinePayment = (($choice === 'renew') || ($form_state['triggering_element']['#name'] === 'submit_online'));
 
   if ($choice === 'new') {
-    $description = 'Friends membership';
-    if ($donation > 0) {
-      $description .= ' and donation';
-    }
+    $description = 'New Friends membership';
   }
   else {
-    $description = 'Friends membership ' . (int) $form_state['values']['year'] .
+    $description = 'Friends membership renewal ' . (int) $form_state['values']['year'] .
       ' - Invoice number ' . $form_state['values']['invoice_number'];
   }
 
@@ -453,10 +435,6 @@ function iish_payments_membership_mail($key, &$message, $params) {
   if (!$isNewMembership) {
     $body .= t('Year') . ': ' . check_plain($params['year']) . "\r\n";
     $body .= t('Invoice number') . ': ' . check_plain($params['invoice_number']) . "\r\n";
-  }
-
-  if ($isNewMembership && ((int) $params['donation'] > 0)) {
-    $body .= t('Donation') . ': EUR ' . number_format($params['donation'], 2, ',', '.') . "\r\n";
   }
 
   $body .= "\r\n";
