@@ -9,8 +9,8 @@
  * @return string The message for the user.
  */
 function iish_payments_callback_accept() {
-  return t('Thank you. The procedure has been completed successfully!') . '<br />' . t('Within a few minutes ' .
-    'you will receive an email from our payment provider confirming your payment.');
+  return t('Thank you. Your payment has been completed successfully!') . '<br />' . t('Within a few minutes ' .
+    'you will receive an email confirming your payment.');
 }
 
 /**
