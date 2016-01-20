@@ -218,7 +218,7 @@ function iish_payments_friends_membership_form($form, &$form_state) {
     $form['submit_invoice'] = array(
       '#type' => 'submit',
       '#name' => 'submit_invoice',
-      '#value' => t('Sent me an invoice'),
+      '#value' => t('Send me an invoice'),
     );
   }
 
@@ -329,7 +329,7 @@ function iish_payments_friends_donation_form($form, &$form_state) {
   $form['submit_invoice'] = array(
     '#type' => 'submit',
     '#name' => 'submit_invoice',
-    '#value' => t('Sent me an invoice'),
+    '#value' => t('Send me an invoice'),
   );
 
   return $form;
