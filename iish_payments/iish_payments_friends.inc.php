@@ -279,6 +279,12 @@ function iish_payments_friends_membership_form_submit($form, &$form_state) {
     drupal_mail('iish_payments_membership', NULL, $form_state['values']['email'], $language, $mailParams);
     drupal_mail('iish_payments_membership', NULL, $emailFriends, $language, $mailParams);
 
+    // if set, send also bcc
+    $emailBcc = trim(variable_get('iish_payments_bcc_email'));
+    if ( $emailBcc != '' ) {
+      drupal_mail('iish_payments_membership', NULL, $emailBcc, $language, $mailParams);
+    }
+
     if ($isOnlinePayment) {
       $paymentMessage = new PayWayMessage(array('orderid' => $orderId));
       $paywayService->send('payment', $paymentMessage);
@@ -380,6 +386,12 @@ function iish_payments_friends_donation_form_submit($form, &$form_state) {
     $emailFriends = variable_get('iish_payments_friends_email');
     drupal_mail('iish_payments_donation', NULL, $form_state['values']['email'], $language, $mailParams);
     drupal_mail('iish_payments_donation', NULL, $emailFriends, $language, $mailParams);
+
+    // if set, send also bcc
+    $emailBcc = trim(variable_get('iish_payments_bcc_email'));
+    if ( $emailBcc != '' ) {
+      drupal_mail('iish_payments_donation', NULL, $emailBcc, $language, $mailParams);
+    }
 
     if ($isOnlinePayment) {
       $paymentMessage = new PayWayMessage(array('orderid' => $orderId));
