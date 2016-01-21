@@ -211,7 +211,7 @@ function iish_payments_friends_membership_form($form, &$form_state) {
   $form['submit_online'] = array(
     '#type' => 'submit',
     '#name' => 'submit_online',
-    '#value' => t('Pay online with iDeal or credit card'),
+    '#value' => t('Pay online with iDEAL or credit card'),
   );
 
   if ($choice === 'new') {
@@ -289,7 +289,7 @@ function iish_payments_friends_membership_form_submit($form, &$form_state) {
   }
   else {
     drupal_set_message(t('Currently it is not possible to proceed to create a new order. ' .
-      'We are sorry for the inconvenience. Please try again later.'));
+      'We are sorry for the inconvenience. Please try again later.'), 'error');
   }
 }
 
@@ -323,7 +323,7 @@ function iish_payments_friends_donation_form($form, &$form_state) {
   $form['submit_online'] = array(
     '#type' => 'submit',
     '#name' => 'submit_online',
-    '#value' => t('Pay online with iDeal or credit card'),
+    '#value' => t('Pay online with iDEAL or credit card'),
   );
 
   $form['submit_invoice'] = array(
@@ -391,7 +391,7 @@ function iish_payments_friends_donation_form_submit($form, &$form_state) {
   }
   else {
     drupal_set_message(t('Currently it is not possible to proceed to create a new order. ' .
-      'We are sorry for the inconvenience. Please try again later.'));
+      'We are sorry for the inconvenience. Please try again later.'), 'error');
   }
 }
 
@@ -441,7 +441,7 @@ function iish_payments_membership_mail($key, &$message, $params) {
   $body .= t('An order has been created with order id: @orderId', array('@orderId' => $params['order_id'])) . "\r\n";
 
   if ($isNewMembership && $params['is_online_payment']) {
-    $body .= t('You have chosen to pay online using iDeal or credit card.') . "\r\n";
+    $body .= t('You have chosen to pay online using iDEAL or credit card.') . "\r\n";
   }
   else {
     if ($isNewMembership && !$params['is_online_payment']) {
@@ -473,7 +473,7 @@ function iish_payments_donation_mail($key, &$message, $params) {
   $body .= t('An order has been created with order id: @orderId', array('@orderId' => $params['order_id'])) . "\r\n";
 
   if ($params['is_online_payment']) {
-    $body .= t('You have chosen to pay online using iDeal or credit card.') . "\r\n";
+    $body .= t('You have chosen to pay online using iDEAL or credit card.') . "\r\n";
   }
   else {
     $body .= t('You have chosen to receive an invoice.') . "\r\n";
