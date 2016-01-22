@@ -20,6 +20,13 @@ function iish_payments_settings_form($form, &$form_state) {
     '#description' => t('Enter the email address of IISH Friends.'),
   );
 
+  $form['general']['iish_payments_bcc_email'] = array(
+    '#type' => 'textfield',
+    '#title' => t('BCC email'),
+    '#default_value' => variable_get('iish_payments_bcc_email'),
+    '#description' => t('Enter the BCC email address.'),
+  );
+
   $friendsInfo = variable_get('iish_payments_friends_information');
 
   $form['general']['iish_payments_friends_information'] = array(

@@ -38,7 +38,7 @@ function iish_payments_invoice_form($form, &$form_state) {
   $form['submit'] = array(
     '#type' => 'submit',
     '#name' => 'submit',
-    '#value' => t('Pay online with iDeal or credit card'),
+    '#value' => t('Pay online with iDEAL or credit card'),
   );
 
   return $form;
@@ -83,6 +83,6 @@ function iish_payments_invoice_form_submit($form, &$form_state) {
   }
   else {
     drupal_set_message(t('Currently it is not possible to proceed to create a new order. ' .
-      'We are sorry for the inconvenience. Please try again later.'));
+      'We are sorry for the inconvenience. Please try again later.'), 'error');
   }
 }
