@@ -63,6 +63,7 @@ function iish_payments_invoice_form_validate($form, &$form_state) {
 function iish_payments_invoice_form_submit($form, &$form_state) {
   global $language;
 
+	// TODO TODOGCU
   $createOrderMessage = new PayWayMessage(array(
     'amount' => ((int) $form_state['values']['amount']) * 100,
     'currency' => 'EUR',
@@ -71,6 +72,10 @@ function iish_payments_invoice_form_submit($form, &$form_state) {
     'email' => $form_state['values']['email'],
     'com' => 'Invoice: ' . trim($form_state['values']['invoice_number']),
     'paymentmethod' => PayWayMessage::ORDER_OGONE_PAYMENT,
+    'owneraddress' => (isset($form_state['values']['address'])) ? trim($form_state['values']['address']) : '',
+    'ownerzip' => (isset($form_state['values']['zipcode'])) ? trim($form_state['values']['zipcode']) : '',
+    'ownertown' => (isset($form_state['values']['city'])) ? trim($form_state['values']['city']) : '',
+    'ownercty' => (isset($form_state['values']['country'])) ? trim($form_state['values']['country']) : '',
   ));
 
   $paywayService = new PayWayService();
