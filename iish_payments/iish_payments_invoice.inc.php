@@ -56,7 +56,14 @@ function iish_payments_invoice_form_validate($form, &$form_state) {
   $amount = $form_state['values']['amount'];
   $amount = str_replace('.', ',', $amount);
   $amountSplit = explode(',', $amount);
-  if ((count($amountSplit) === 2) && (strlen($amountSplit[1]) === 2)) {
+  if (count($amountSplit) === 1) {
+    if (ctype_digit($amountSplit[0])) {
+      if ((int) $amountSplit[0] > 0) {
+        $validAmount = true;
+      }
+    }
+  }
+  else if ((count($amountSplit) === 2) && (strlen($amountSplit[1]) === 2)) {
     if (ctype_digit($amountSplit[0]) && ctype_digit($amountSplit[1])) {
       if (((int) $amountSplit[0] >= 0) && ((int) $amountSplit[1] >= 0)) {
         $validAmount = true;
@@ -78,7 +85,10 @@ function iish_payments_invoice_form_submit($form, &$form_state) {
   $amount = $form_state['values']['amount'];
   $amount = str_replace('.', ',', $amount);
   $amountSplit = explode(',', $amount);
-  $amountInCents = (((int) $amountSplit[0]) * 100) + ((int) $amountSplit[1]);
+  $amountInCents = (((int) $amountSplit[0]) * 100);
+  if (count($amountSplit) === 2) {
+    $amountInCents += ((int) $amountSplit[1]);
+  }
 
   $createOrderMessage = new PayWayMessage(array(
     'amount' => $amountInCents,
