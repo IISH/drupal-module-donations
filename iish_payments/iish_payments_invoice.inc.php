@@ -52,7 +52,19 @@ function iish_payments_invoice_form_validate($form, &$form_state) {
     form_set_error('email', t('Please specify a valid e-mail address.'));
   }
 
-  if (!ctype_digit($form_state['values']['amount']) || ((int) $form_state['values']['amount'] <= 0)) {
+  $validAmount = false;
+  $amount = $form_state['values']['amount'];
+  $amount = str_replace('.', ',', $amount);
+  $amountSplit = explode(',', $amount);
+  if ((count($amountSplit) === 2) && (strlen($amountSplit[1]) === 2)) {
+    if (ctype_digit($amountSplit[0]) && ctype_digit($amountSplit[1])) {
+      if (((int) $amountSplit[0] >= 0) && ((int) $amountSplit[1] >= 0)) {
+        $validAmount = true;
+      }
+    }
+  }
+
+  if (!$validAmount) {
     form_set_error('amount', t('Please specify a valid amount.'));
   }
 }
@@ -63,9 +75,13 @@ function iish_payments_invoice_form_validate($form, &$form_state) {
 function iish_payments_invoice_form_submit($form, &$form_state) {
   global $language;
 
-	// TODO TODOGCU
+  $amount = $form_state['values']['amount'];
+  $amount = str_replace('.', ',', $amount);
+  $amountSplit = explode(',', $amount);
+  $amountInCents = (((int) $amountSplit[0]) * 100) + ((int) $amountSplit[1]);
+
   $createOrderMessage = new PayWayMessage(array(
-    'amount' => ((int) $form_state['values']['amount']) * 100,
+    'amount' => $amountInCents,
     'currency' => 'EUR',
     'language' => ($language->language === 'nl') ? 'nl_NL' : 'en_US',
     'cn' => $form_state['values']['name'],

@@ -242,7 +242,6 @@ function iish_payments_friends_membership_form_submit($form, &$form_state) {
 
   $choice = $form_state['choice'];
   $amount = (int) $form_state['values']['amount'];
-  $donation = ($choice === 'new') ? (int) $form_state['values']['donation'] : 0;
   $isOnlinePayment = (($choice === 'renew') || ($form_state['triggering_element']['#name'] === 'submit_online'));
 
   if ($choice === 'new') {
@@ -253,9 +252,8 @@ function iish_payments_friends_membership_form_submit($form, &$form_state) {
       ' - Invoice number ' . $form_state['values']['invoice_number'];
   }
 
-	// TODO TODOGCU
   $createOrderMessage = new PayWayMessage(array(
-    'amount' => ($amount * 100) + ($donation * 100),
+    'amount' => $amount * 100,
     'currency' => 'EUR',
     'language' => ($language->language === 'nl') ? 'nl_NL' : 'en_US',
     'cn' => $form_state['values']['name'],
@@ -367,7 +365,6 @@ function iish_payments_friends_donation_form_submit($form, &$form_state) {
 
   $isOnlinePayment = ($form_state['triggering_element']['#name'] === 'submit_online');
 
-	// TODO TODOGCU
   $createOrderMessage = new PayWayMessage(array(
     'amount' => ((int) $form_state['values']['amount']) * 100,
     'currency' => 'EUR',
