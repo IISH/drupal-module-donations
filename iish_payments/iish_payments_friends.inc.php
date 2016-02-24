@@ -104,10 +104,10 @@ function iish_payments_friends_membership_form($form, &$form_state) {
   $choice = $form_state['choice'];
 
   if ($choice === 'new') {
-    drupal_set_title(t('New Membership'));
+    drupal_set_title(t('New Friends Membership'));
   }
   else {
-    drupal_set_title(t('Friends Membership Renewal'));
+    drupal_set_title(t('Renewal Friends Membership'));
   }
 
   if ($choice === 'new') {
@@ -242,25 +242,28 @@ function iish_payments_friends_membership_form_submit($form, &$form_state) {
 
   $choice = $form_state['choice'];
   $amount = (int) $form_state['values']['amount'];
-  $donation = ($choice === 'new') ? (int) $form_state['values']['donation'] : 0;
   $isOnlinePayment = (($choice === 'renew') || ($form_state['triggering_element']['#name'] === 'submit_online'));
 
   if ($choice === 'new') {
     $description = 'New Friends membership';
   }
   else {
-    $description = 'Friends membership renewal ' . (int) $form_state['values']['year'] .
+    $description = 'Renewal Friends membership ' . (int) $form_state['values']['year'] .
       ' - Invoice number ' . $form_state['values']['invoice_number'];
   }
 
   $createOrderMessage = new PayWayMessage(array(
-    'amount' => ($amount * 100) + ($donation * 100),
+    'amount' => $amount * 100,
     'currency' => 'EUR',
     'language' => ($language->language === 'nl') ? 'nl_NL' : 'en_US',
     'cn' => $form_state['values']['name'],
     'email' => $form_state['values']['email'],
     'com' => $description,
     'paymentmethod' => $isOnlinePayment ? PayWayMessage::ORDER_OGONE_PAYMENT : PayWayMessage::ORDER_BANK_PAYMENT,
+    'owneraddress' => (isset($form_state['values']['address'])) ? trim($form_state['values']['address']) : '',
+    'ownerzip' => (isset($form_state['values']['zipcode'])) ? trim($form_state['values']['zipcode']) : '',
+    'ownertown' => (isset($form_state['values']['city'])) ? trim($form_state['values']['city']) : '',
+    'ownercty' => (isset($form_state['values']['country'])) ? trim($form_state['values']['country']) : '',
   ));
 
   $paywayService = new PayWayService();
@@ -303,7 +306,7 @@ function iish_payments_friends_membership_form_submit($form, &$form_state) {
  * Implements hook_form()
  */
 function iish_payments_friends_donation_form($form, &$form_state) {
-  drupal_set_title(t('Donation'));
+  drupal_set_title(t('Friends Donation'));
 
   $form['name'] = array(
     '#type' => 'textfield',
@@ -368,8 +371,12 @@ function iish_payments_friends_donation_form_submit($form, &$form_state) {
     'language' => ($language->language === 'nl') ? 'nl_NL' : 'en_US',
     'cn' => $form_state['values']['name'],
     'email' => $form_state['values']['email'],
-    'com' => 'Donation',
+    'com' => 'Friends Donation',
     'paymentmethod' => $isOnlinePayment ? PayWayMessage::ORDER_OGONE_PAYMENT : PayWayMessage::ORDER_BANK_PAYMENT,
+    'owneraddress' => (isset($form_state['values']['address'])) ? trim($form_state['values']['address']) : '',
+    'ownerzip' => (isset($form_state['values']['zipcode'])) ? trim($form_state['values']['zipcode']) : '',
+    'ownertown' => (isset($form_state['values']['city'])) ? trim($form_state['values']['city']) : '',
+    'ownercty' => (isset($form_state['values']['country'])) ? trim($form_state['values']['country']) : '',
   ));
 
   $paywayService = new PayWayService();
