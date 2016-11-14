@@ -11,7 +11,7 @@ function iish_payments_menu() {
   $items = array();
 
   $items['friends/membership'] = array(
-    'title' => t('Membership'),
+    'title' => t('Membership and Gifts'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('iish_payments_friends_form'),
     'access callback' => TRUE,
