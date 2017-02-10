@@ -64,12 +64,6 @@ function iish_payments_friends_form_submit($form, &$form_state) {
  * Implements hook_form()
  */
 function iish_payments_friends_choice_form($form, &$form_state) {
-  $friendsInfo = variable_get('iish_payments_friends_information');
-
-  $form['info'] = array(
-    '#markup' => nl2br(filter_xss_admin($friendsInfo['value'])),
-  );
-
   $form['choice'] = array(
     '#type' => 'radios',
     '#title' => t('Please make a choice'),
@@ -85,6 +79,11 @@ function iish_payments_friends_choice_form($form, &$form_state) {
     '#type' => 'submit',
     '#name' => 'submit',
     '#value' => t('Next'),
+  );
+
+  $friendsInfo = variable_get('iish_payments_friends_information');
+  $form['info'] = array(
+    '#markup' => nl2br(filter_xss_admin($friendsInfo['value'])),
   );
 
   return $form;
@@ -193,12 +192,16 @@ function iish_payments_friends_membership_form($form, &$form_state) {
   );
 
   if ($choice === 'renew') {
+    $maxYear = intval(date('Y'));
+    $minYear = $maxYear - 5;
+
     $form['year'] = array(
       '#type' => 'select',
       '#title' => t('Year'),
       '#required' => TRUE,
-      '#options' => array_combine(range(2000, date('Y')), range(2000, date('Y'))),
-      '#default_value' => date('Y'),
+      '#options' => array_combine(
+        range($minYear, $maxYear), range($minYear, $maxYear)),
+      '#default_value' => $maxYear,
     );
 
     $form['invoice_number'] = array(
