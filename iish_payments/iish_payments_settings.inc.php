@@ -49,24 +49,55 @@ function iish_payments_settings_form($form, &$form_state) {
     '#description' => t('Enter the address of the PayWay API.'),
   );
 
-  $form['payway']['iish_payments_payway_passphrase_in'] = array(
+  $form['payway']['friends'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Friends payments'),
+  );
+
+  $form['payway']['friends']['iish_payments_payway_friends_passphrase_in'] = array(
     '#type' => 'textfield',
     '#title' => t('Passphrase IN'),
-    '#default_value' => variable_get('iish_payments_payway_passphrase_in'),
+    '#default_value' => variable_get('iish_payments_payway_friends_passphrase_in'),
     '#description' => t('Enter the passphrase for messages to PayWay.'),
   );
 
-  $form['payway']['iish_payments_payway_passphrase_out'] = array(
+  $form['payway']['friends']['iish_payments_payway_friends_passphrase_out'] = array(
     '#type' => 'textfield',
     '#title' => t('Passphrase OUT'),
-    '#default_value' => variable_get('iish_payments_payway_passphrase_out'),
+    '#default_value' => variable_get('iish_payments_payway_friends_passphrase_out'),
     '#description' => t('Enter the passphrase for messages from PayWay.'),
   );
 
-  $form['payway']['iish_payments_payway_project'] = array(
+  $form['payway']['friends']['iish_payments_payway_friends_project'] = array(
     '#type' => 'textfield',
     '#title' => t('Project'),
-    '#default_value' => variable_get('iish_payments_payway_project'),
+    '#default_value' => variable_get('iish_payments_payway_friends_project'),
+    '#description' => t('Enter the project to register the orders in PayWay.'),
+  );
+
+  $form['payway']['invoices'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Invoice payments'),
+  );
+
+  $form['payway']['invoices']['iish_payments_payway_invoices_passphrase_in'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Passphrase IN'),
+    '#default_value' => variable_get('iish_payments_payway_invoices_passphrase_in'),
+    '#description' => t('Enter the passphrase for messages to PayWay.'),
+  );
+
+  $form['payway']['invoices']['iish_payments_payway_invoices_passphrase_out'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Passphrase OUT'),
+    '#default_value' => variable_get('iish_payments_payway_invoices_passphrase_out'),
+    '#description' => t('Enter the passphrase for messages from PayWay.'),
+  );
+
+  $form['payway']['invoices']['iish_payments_payway_invoices_project'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Project'),
+    '#default_value' => variable_get('iish_payments_payway_invoices_project'),
     '#description' => t('Enter the project to register the orders in PayWay.'),
   );
 

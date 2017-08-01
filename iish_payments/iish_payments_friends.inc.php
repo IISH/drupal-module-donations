@@ -269,7 +269,7 @@ function iish_payments_friends_membership_form_submit($form, &$form_state) {
     'ownercty' => (isset($form_state['values']['country'])) ? trim($form_state['values']['country']) : '',
   ));
 
-  $paywayService = new PayWayService();
+  $paywayService = new PayWayService('friends');
   $orderMessage = $paywayService->send('createOrder', $createOrderMessage);
 
   // If creating a new order is successful, redirect to PayWay or to bank transfer information?
@@ -382,7 +382,7 @@ function iish_payments_friends_donation_form_submit($form, &$form_state) {
     'ownercty' => (isset($form_state['values']['country'])) ? trim($form_state['values']['country']) : '',
   ));
 
-  $paywayService = new PayWayService();
+  $paywayService = new PayWayService('friends');
   $orderMessage = $paywayService->send('createOrder', $createOrderMessage);
 
   // If creating a new order is successful, redirect to PayWay

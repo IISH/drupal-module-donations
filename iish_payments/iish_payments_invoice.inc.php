@@ -104,7 +104,7 @@ function iish_payments_invoice_form_submit($form, &$form_state) {
     'ownercty' => (isset($form_state['values']['country'])) ? trim($form_state['values']['country']) : '',
   ));
 
-  $paywayService = new PayWayService();
+  $paywayService = new PayWayService('invoices');
   $orderMessage = $paywayService->send('createOrder', $createOrderMessage);
 
   // If creating a new order is successful, redirect to PayWay
