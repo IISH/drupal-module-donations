@@ -185,6 +185,7 @@ function iish_payments_friends_membership_form($form, &$form_state) {
     '#title' => t('Type of membership'),
     '#required' => TRUE,
     '#options' => array(
+      25 => '&euro; 25,-',
       100 => '&euro; 100,-',
       500 => '&euro; 500,-',
       1500 => '&euro; 1500,- (' . t('Lifetime member') . ')',
