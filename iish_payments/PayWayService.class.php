@@ -41,6 +41,12 @@ class PayWayService {
           'headers' => array('Content-Type' => 'text/json'),
           'method' => 'POST',
           'data' => drupal_json_encode($message->getAsArray()),
+          'context' => stream_context_create(array(
+            'ssl' => array(
+              'verify_peer' => FALSE,
+              'verify_peer_name' => FALSE,
+            ),
+          )),
         )
       );
 
