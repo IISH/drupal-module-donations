@@ -165,20 +165,20 @@ function iish_payments_friends_membership_form($form, &$form_state) {
     '#required' => TRUE,
   );
 
-  if ($choice === 'new') {
-    $form['date_of_birth'] = array(
-      '#type' => 'date_popup',
-      '#title' => t('Date of birth'),
-      '#required' => FALSE,
-      '#date_format' => 'Y-m-d',
-      '#default_value' => date('Y-m-d'),
-      '#datepicker_options' => array(
-        'yearRange' => '-150:',
-        'minDate' => '-150y',
-        'maxDate' => '-1',
-      ),
-    );
-  }
+//  if ($choice === 'new') {
+//    $form['date_of_birth'] = array(
+//      '#type' => 'date_popup',
+//      '#title' => t('Date of birth'),
+//      '#required' => FALSE,
+//      '#date_format' => 'Y-m-d',
+//      '#default_value' => date('Y-m-d'),
+//      '#datepicker_options' => array(
+//        'yearRange' => '-150:',
+//        'minDate' => '-150y',
+//        'maxDate' => '-1',
+//      ),
+//    );
+//  }
 
   $form['amount'] = array(
     '#type' => 'radios',
@@ -448,9 +448,9 @@ function iish_payments_membership_mail($key, &$message, $params) {
 
   $body .= t('E-mail') . ': ' . check_plain($params['email']) . "\r\n";
 
-  if ($isNewMembership) {
-    $body .= t('Date of birth') . ': ' . date('d-m-Y', strtotime($params['date_of_birth'])) . "\r\n";
-  }
+//  if ($isNewMembership) {
+//    $body .= t('Date of birth') . ': ' . date('d-m-Y', strtotime($params['date_of_birth'])) . "\r\n";
+//  }
 
   $body .= "\r\n";
   $body .= t('Friends membership') . ': EUR ' . number_format($params['amount'], 2, ',', '.') . "\r\n";
