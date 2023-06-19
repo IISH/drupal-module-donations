@@ -185,10 +185,10 @@ function iish_payments_friends_membership_form($form, &$form_state) {
     '#title' => t('Type of membership'),
     '#required' => TRUE,
     '#options' => array(
-	  10 => '&euro; 10,- (' . t('student price') . ')',
-	  25 => '&euro; 25,- (' . t('normal price') . ')',
-      100 => '&euro; 100,-',
-      500 => '&euro; 500,-',
+	  10 => '&euro; 10,- (' . t('student price p/year') . ')',
+	  25 => '&euro; 25,- (' . t('normal price p/year') . ')',
+      100 => '&euro; 100,- (' . t('Good Friend p/year') . ')',
+      500 => '&euro; 500,- (' . t('Great Friend p/year') . ')',
       1500 => '&euro; 1500,- (' . t('Lifetime member') . ')',
     ),
   );
